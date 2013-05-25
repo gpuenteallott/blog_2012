@@ -1,109 +1,58 @@
+* {
+	margin: 0;
+	padding: 0;
+	text-decoration:none;
+}
 body {
-  padding: 20px;
-  background-image: url("/images/bg.jpg");
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 90% "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
+header, section, footer {
+	max-width: 1000px;
+	width:95%;
+	margin: 0 auto;
+	padding: 30px 0;
+}
+
+header, section {
+	border-bottom: solid 1px #444;
+}
+
+a, a:visited {
   color: #00B7FF;
 }
+h1 {
+	font-size: 250%;
+	display:inline;
+}
+header span {
+	font-weight: bold;
+	color: #000;
+}
+h3 {
+	font-size: 150%;
+}
+header p {
+	float: right;
+}
+header form{
+	float:right;
+}
+
+footer {
+	text-align:center;
+}
+footer p{
+	text-align:left;
+}
+footer video {
+	margin-bottom:15px;
+}
+
 
 article {
   border: 2px solid #ffffff;
   padding: 7px;
   margin: 20px;
   background-color: #e5f5ff;
-}
-
-
-
-#flashinfo {
-  width: 450px;
-  border: 2px solid blue;
-  padding: 7px;
-  padding-bottom: 0;
-  margin-bottom: 20px;
-  background-color: #f0f0f0;
-}
-
-#flashinfo h3 {
-    text-align: left;
-    font-weight: bold;
-    padding: 5px 5px 5px 15px;
-    font-size: 12px;
-    margin: -7px;
-    margin-bottom: 0px;
-    background-color: #00c;
-    color: #fff; 
-}
-
-#flashinfo ul li {
-    font-size: 12px;
-    list-style: square; 
-}
-
-
-#flashsuccess {
-  width: 450px;
-  border: 2px solid green;
-  padding: 7px;
-  padding-bottom: 0;
-  margin-bottom: 20px;
-  background-color: #f0f0f0;
-}
-
-#flashsuccess h3 {
-    text-align: left;
-    font-weight: bold;
-    padding: 5px 5px 5px 15px;
-    font-size: 12px;
-    margin: -7px;
-    margin-bottom: 0px;
-    background-color: #0c0;
-    color: #fff; 
-}
-
-#flashsuccess ul li {
-    font-size: 12px;
-    list-style: square; 
-}
-
-#flasherror {
-  width: 450px;
-  border: 2px solid red;
-  padding: 7px;
-  padding-bottom: 0;
-  margin-bottom: 20px;
-  background-color: #f0f0f0;
-}
-
-#flasherror h3 {
-    text-align: left;
-    font-weight: bold;
-    padding: 5px 5px 5px 15px;
-    font-size: 12px;
-    margin: -7px;
-    margin-bottom: 0px;
-    background-color: #c00;
-    color: #fff; 
-}
-
-#flasherror ul li {
-    font-size: 12px;
-    list-style: square;
-}
-
-.invalid_field {
-  padding: 2px;
-  background-color: red;
-  display: table; 
-}
-
-.field {
-  width: 100%;
-}
-
-#logininfo {
-  float: right;
-  clear: both;
 }
