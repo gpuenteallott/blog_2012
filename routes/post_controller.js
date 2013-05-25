@@ -132,11 +132,11 @@ exports.show = function(req, res, next) {
             // Entrega 3
             // Obtener el número de comentarios para este post
             console.log("postId "+ req.post.id);
-            models.Comment.count({ where: ["postId = ?", req.post.id] })
+            /*models.Comment.count({ where: ["postId = ?", req.post.id] })
                 .success( function(c) {
                     console.log("Comentarios para este post son: "+c);
-                    req.post.ncomments = c;
-
+                    req.post.ncomments = c;*/
+                    req.post.ncomments = "undefinido";
 
                     // Buscar comentarios
                     models.Comment
@@ -180,7 +180,7 @@ exports.show = function(req, res, next) {
                              next(error);
                           });
 
-                        });
+                       /* });*/
 
             
         })
