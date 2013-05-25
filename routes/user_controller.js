@@ -48,7 +48,7 @@ exports.index = function(req, res, next) {
         .findAll({order: 'name'})
         .success(function(users) {
             res.render('users/index', {
-                users: users
+                users: users, cont: res.cont
             });
         })
         .error(function(error) {
@@ -60,7 +60,7 @@ exports.index = function(req, res, next) {
 exports.show = function(req, res, next) {
 
     res.render('users/show', {
-        user: req.user
+        user: req.user, cont: res.cont
     });
 };
 
@@ -73,7 +73,7 @@ exports.new = function(req, res, next) {
           email: 'Tu email'
         });
     
-    res.render('users/new', {user: user});
+    res.render('users/new', {user: user, cont: res.cont});
 };
 
 // POST /users
@@ -92,7 +92,7 @@ exports.create = function(req, res, next) {
                 console.log("Error: El usuario \""+ req.body.user.login +"\" ya existe: "+existing_user.values);
                 req.flash('error', "Error: El usuario \""+ req.body.user.login +"\" ya existe.");
                 res.render('users/new', 
-                           { user: user,
+                           { user: user, cont: res.cont,
                              validate_errors: {
                                  login: 'El usuario \"'+ req.body.user.login +'\" ya existe.'
                              }
@@ -108,14 +108,14 @@ exports.create = function(req, res, next) {
                         req.flash('error', validate_errors[err]);
                     };
                     res.render('users/new', {user: user,
-                                             validate_errors: validate_errors});
+                                             validate_errors: validate_errors, cont: res.cont});
                     return;
                 } 
                 
                 // El password no puede estar vacio
                 if ( ! req.body.user.password) {
                     req.flash('error', 'El campo Password es obligatorio.');
-                    res.render('users/new', {user: user});
+                    res.render('users/new', {user: user, cont: res.cont});
                     return;
                 }
 
@@ -140,7 +140,7 @@ exports.create = function(req, res, next) {
 // GET /users/33/edit
 exports.edit = function(req, res, next) {
 
-    res.render('users/edit', {user: req.user});
+    res.render('users/edit', {user: req.user, cont: res.cont});
 };
 
 // PUT /users/33
@@ -159,7 +159,7 @@ exports.update = function(req, res, next) {
             req.flash('error', validate_errors[err]);
         };
         res.render('users/edit', {user: req.user,
-                                  validate_errors: validate_errors});
+                                  validate_errors: validate_errors, cont: res.cont});
         return;
     } 
  

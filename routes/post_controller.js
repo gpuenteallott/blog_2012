@@ -65,6 +65,7 @@ exports.index = function(req, res, next) {
               case 'htm':
                   res.render('posts/index', {
                     posts: posts
+                    , cont: res.cont
                   });
                   break;
               case 'json':
@@ -158,6 +159,7 @@ exports.show = function(req, res, next) {
                                       post: req.post,
                                       comments: comments,
                                       comment: new_comment
+                                      , cont: res.cont
                                   });
                                   break;
                               case 'json':
@@ -225,7 +227,7 @@ exports.new = function(req, res, next) {
           body: 'Introduzca el texto del articulo'
         });
     
-    res.render('posts/new', {post: post});
+    res.render('posts/new', {post: post, cont: res.cont});
 };
 
 // POST /posts
@@ -247,7 +249,7 @@ exports.create = function(req, res, next) {
         };
 
         res.render('posts/new', {post: post,
-                                 validate_errors: validate_errors});
+                                 validate_errors: validate_errors, cont: res.cont});
         return;
     } 
     
@@ -264,7 +266,7 @@ exports.create = function(req, res, next) {
 // GET /posts/33/edit
 exports.edit = function(req, res, next) {
 
-    res.render('posts/edit', {post: req.post});
+    res.render('posts/edit', {post: req.post, cont: res.cont});
 };
 
 // PUT /posts/33
@@ -283,7 +285,7 @@ exports.update = function(req, res, next) {
         };
 
         res.render('posts/edit', {post: req.post,
-                                  validate_errors: validate_errors});
+                                  validate_errors: validate_errors, cont: res.cont});
         return;
     } 
     req.post.save(['title', 'body'])

@@ -33,7 +33,7 @@ exports.requiresLogin = function (req, res, next) {
 exports.new = function(req, res) {
 
     res.render('session/new', 
-               { redir: req.query.redir || '/'
+               { redir: req.query.redir || '/', cont: res.cont
                });
 };
 

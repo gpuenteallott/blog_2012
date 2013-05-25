@@ -51,7 +51,7 @@ exports.index = function(req, res, next) {
         .success(function(comments) {
             res.render('comments/index', {
                 comments: comments,
-                post: req.post
+                post: req.post, cont: res.cont
             });
         })
         .error(function(error) {
@@ -82,7 +82,7 @@ exports.show = function(req, res, next) {
 
                     res.render('comments/show', {
                         comment: req.comment,
-                        post: req.post
+                        post: req.post, cont: res.cont
                     });
                 })            
                 .error(function(error) {
@@ -102,7 +102,7 @@ exports.new = function(req, res, next) {
         });
     
     res.render('comments/new', {comment: comment,
-                                post: req.post
+                                post: req.post, cont: res.cont
                                });
 };
 
@@ -126,7 +126,7 @@ exports.create = function(req, res, next) {
 
         res.render('comments/new', {comment: comment,
                                     post: req.post,
-                                    validate_errors: validate_errors});
+                                    validate_errors: validate_errors, cont: res.cont});
         return;
     } 
     
@@ -144,7 +144,7 @@ exports.create = function(req, res, next) {
 exports.edit = function(req, res, next) {
 
     res.render('comments/edit', {comment: req.comment,
-                                 post: req.post
+                                 post: req.post, cont: res.cont
                                 });
 };
 
@@ -164,7 +164,7 @@ exports.update = function(req, res, next) {
 
         res.render('comments/edit', {comment: req.comment,
                                      post: req.post,
-                                     validate_errors: validate_errors});
+                                     validate_errors: validate_errors, cont: res.cont});
         return;
     } 
     
@@ -205,7 +205,7 @@ exports.orphans = function(req, res, next) {
             console.log(comments);
 
             res.render('comments/orphans', {
-                comments: comments
+                comments: comments, cont: res.cont
             });
         })
         .error(function(error) {
