@@ -7,6 +7,8 @@ var express = require('express')
   , routes = require('./routes')
   , http = require('http')
   , path = require('path')
+  , count = require('./count')
+  , sessionTimer = require('./sessionTimer')
   , partials = require('express-partials')
   , sessionController = require('./routes/session_controller.js')
   , postController = require('./routes/post_controller.js')
@@ -24,11 +26,13 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
+  app.use(count.getCount());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser('--Core Blog 2012--'));
   app.use(express.session());
+
 
   app.use(require('connect-flash')());
 
@@ -43,6 +47,9 @@ app.configure(function(){
 
      next();
   });
+
+    
+  app.use(sessionTimer.checkTime());
 
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
@@ -87,6 +94,9 @@ app.get('/', routes.index);
 app.param('postid', postController.load);
 app.param('userid', userController.load);
 app.param('commentid', commentController.load);
+
+
+
 
 //---------------------
 

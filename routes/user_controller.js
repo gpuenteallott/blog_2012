@@ -185,6 +185,37 @@ exports.update = function(req, res, next) {
         });
 };
 
+// Entrega 3
+// Actualizar time del usuario
+// Se busca en la base de datos, y se actualiza su time a ahora
+exports.updateTime = function(req, res) {
+	
+    models.User.find({where: {login: req.session.user.login}})
+        .success(function(user) {
+            if (user) {
+
+
+                    // Entrega 4, actualización del campo time
+                   user.time = new Date().getTime() / 1000;
+                    var field_time = ['time'];
+                    user.save(field_time)
+                    .success(function() {
+                        console.log('Tiempo actualizado con éxito. '+user.time);
+                    })
+                    .error(function(error) {
+                        next(error);
+                    });
+
+                  
+
+            }
+        })
+        .error(function(err) {
+            
+        });
+
+};
+
 // DELETE /users/33
 exports.destroy = function(req, res, next) {
 
@@ -233,7 +264,7 @@ exports.autenticar = function(login, password, callback) {
             if (user) {
                 console.log('Encontrado el usuario.');
 
-                if (user.hashed_password == "" && password == "") {
+                if (user.hashed_password == "" && password == "") {trodu
                     callback(null,user);
                     return;
                 }
@@ -241,6 +272,18 @@ exports.autenticar = function(login, password, callback) {
                 var hash = encriptarPassword(password, user.salt);
                 
                 if (hash == user.hashed_password) {
+
+        		    // Entrega 4, actualización del campo time
+                            user.time = new Date().getTime() / 1000;
+        		    var field_time = ['time'];
+                            user.save(field_time)
+        			.success(function() {
+        			    console.log('Tiempo actualizado con éxito.');
+        			})
+        			.error(function(error) {
+        			    next(error);
+        			});
+
                     callback(null,user);
                 } else {
                     callback('Password erróneo.');
