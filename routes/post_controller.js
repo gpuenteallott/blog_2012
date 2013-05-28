@@ -57,9 +57,7 @@ exports.index = function(req, res, next) {
         .success(function(posts) {
 
             // Entrega 3
-
-            // Aquí hay que añadir la consulta al número de comentarios para cada post
-            // Problema, no se puede esperar al callback de cada consulta
+            // Obtener el número de comentarios para todos los posts
           
             switch (format) { 
               case 'html':
@@ -132,11 +130,7 @@ exports.show = function(req, res, next) {
 
             // Entrega 3
             // Obtener el número de comentarios para este post
-            console.log("postId "+ req.post.id);
-            models.Comment.count({ where: ["postId = ?", req.post.id] })
-                .success( function(c) {
-                    console.log("Comentarios para este post son: "+c);
-                    req.post.ncomments = c;
+            
 
                     // Buscar comentarios
                     models.Comment
@@ -157,6 +151,7 @@ exports.show = function(req, res, next) {
                                   });
                                   res.render('posts/show', {
                                       post: req.post,
+                                      ncomments: comments.length,
                                       comments: comments,
                                       comment: new_comment
                                       , cont: res.cont
@@ -180,7 +175,6 @@ exports.show = function(req, res, next) {
                              next(error);
                           });
 
-                        });
 
             
         })
