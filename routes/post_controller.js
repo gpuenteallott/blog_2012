@@ -8,7 +8,8 @@ var models = require('../models/models.js');
 exports.load = function(req, res, next, id) {
 
    models.Post
-        .find({where: {id: Number(id)}})
+        .find({where: {id: Number(id)},
+               include: [ { model: models.Comment, as: 'Comments' } ] })
         .success(function(post) {
             if (post) {
 
@@ -51,7 +52,7 @@ exports.index = function(req, res, next) {
 
     models.Post
         .findAll({order: 'updatedAt DESC',
-	                include: [ { model: models.User, as: 'Author' } ]
+	                include: [ { model: models.User, as: 'Author' } , models.Comment]
 	      })
         .success(function(posts) {
 
@@ -132,11 +133,10 @@ exports.show = function(req, res, next) {
             // Entrega 3
             // Obtener el número de comentarios para este post
             console.log("postId "+ req.post.id);
-            /*models.Comment.count({ where: ["postId = ?", req.post.id] })
+            models.Comment.count({ where: ["postId = ?", req.post.id] })
                 .success( function(c) {
                     console.log("Comentarios para este post son: "+c);
-                    req.post.ncomments = c;*/
-                    req.post.ncomments = "undefinido";
+                    req.post.ncomments = c;
 
                     // Buscar comentarios
                     models.Comment
@@ -180,7 +180,7 @@ exports.show = function(req, res, next) {
                              next(error);
                           });
 
-                       /* });*/
+                        });
 
             
         })
