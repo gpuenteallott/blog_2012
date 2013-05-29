@@ -5,11 +5,34 @@
       <h1>
         <%= post.title %>
         <small>por <em> <%= post.author && post.author.name || "Sin autor" %> </em></small>
+        <% if (session.user) { %>
+
+          <% if ( !favourite ) { %>
+            <form method="post" action="/users/<%=session.user.id%>/favourites/<%=post.id%>" name="starform"/>
+              <input type="hidden" name="_method" value="put"/>
+              <a onclick="document.all['starform'].submit();">
+                <img src="/images/star.png" class="star"/>
+              </a>
+            </form>
+          <% } else {%>
+            <form method="post" action="/users/<%=session.user.id%>/favourites/<%=post.id%>" name="starform"/>
+              <input type="hidden" name="_method" value="delete"/>
+              <a onclick="document.all['starform'].submit();">
+                <img src="/images/star2.png" class="star"/>
+              </a>
+            </form>
+          <% } %>
+
+        <% } %>
       </h1>
      <em> <%= post.updatedAt.toLocaleDateString() %></em>
    </div>
 
    <p><%- escapeText(post.body) %></p>
+
+   <p>
+    Este post tiene <%= ncomments %> comentarios 
+    </p>
 
    <% if (session.user && session.user.id == post.authorId) {%>  
      <a href="/posts/<%= post.id %>/edit"> Editar </a>

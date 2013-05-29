@@ -75,3 +75,13 @@ Comment
   line-height: 27px;
   color: inherit;
 }
+
+/* ENTREGA 4 */
+.count {
+  float:right;
+  color:white;
+}
+.star {
+  width: 40px;
+  cursor:pointer;
+}

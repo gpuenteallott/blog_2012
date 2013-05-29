@@ -5,12 +5,35 @@
       <h1>
         <a href='/posts/<%= posts[i].id %>' class='titlelink'> <%= posts[i].title %> </a>
         <small>por <em> <%= posts[i].author && posts[i].author.name || "Sin autor" %> </em></small>
+        <% if (session.user) { %>
+
+          <% if ( !posts[i].isFavourite ) { %>
+            <form method="post" action="/users/<%=session.user.id%>/favourites/<%=posts[i].id%>" name="starform<%=i%>"/>
+              <input type="hidden" name="_method" value="put"/>
+              <a onclick="document.all['starform<%=i%>'].submit();">
+                <img src="/images/star.png" class="star"/>
+              </a>
+            </form>
+          <% } else {%>
+            <form method="post" action="/users/<%=session.user.id%>/favourites/<%=posts[i].id%>" name="starform<%=i%>"/>
+              <input type="hidden" name="_method" value="delete"/>
+              <a onclick="document.all['starform<%=i%>'].submit();">
+                <img src="/images/star2.png" class="star"/>
+              </a>
+            </form>
+          <% } %>
+
+        <% } %>
       </h1>
      <em> <%= posts[i].updatedAt.toLocaleDateString() %></em>
    </div>
       
      <p>
         <%= posts[i].body.slice(0,1000) %> ... 
+     </p>
+
+     <p>
+         Este post tiene <%= posts[i].comments.length %> comentarios 
      </p>
 
      <footer class="pull-right">

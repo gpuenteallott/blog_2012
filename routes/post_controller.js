@@ -8,7 +8,8 @@ var models = require('../models/models.js');
 exports.load = function(req, res, next, id) {
 
    models.Post
-        .find({where: {id: Number(id)}})
+        .find({where: {id: Number(id)},
+               include: [ { model: models.Comment, as: 'Comments' }] })
         .success(function(post) {
             if (post) {
                 req.post = post;
@@ -49,17 +50,40 @@ exports.index = function(req, res, next) {
 
     models.Post
         .findAll({order: 'updatedAt DESC',
-	                include: [ { model: models.User, as: 'Author' } ]
+	                include: [ { model: models.User, as: 'Author' }  , 
+                  models.Comment, models.Favourite ]
 	      })
         .success(function(posts) {
 
-          // console.log(posts);
+            // Entrega 4
+
+            if ( req.session.user ) {
+
+                for ( var i in posts ){
+                  for ( var j in posts[i].favourites) {
+
+                    if ( posts[i].favourites[j].userId == req.session.user.id )
+
+                      posts[i].isFavourite = true;
+
+                    else 
+
+                      posts[i].isFavourite = false;
+
+                  }
+                }
+
+            }
+
+            // Entrega 3
+            // Obtener el número de comentarios para todos los posts
           
             switch (format) { 
               case 'html':
               case 'htm':
                   res.render('posts/index', {
                     posts: posts
+                    , cont: res.cont
                   });
                   break;
               case 'json':
@@ -77,6 +101,7 @@ exports.index = function(req, res, next) {
                   console.log('No se soporta el formato \".'+format+'\" pedido para \"'+req.url+'\".');
                   res.send(406);
             }
+
         })
         .error(function(error) {
             next(error);
@@ -113,7 +138,33 @@ function posts_to_xml(posts) {
 
 // GET /posts/33
 exports.show = function(req, res, next) {
+// GET /search/item
+exports.search = function(req, res, next) {
 
+
+    //var url = require('url');
+    //var queryObject = url.parse(req.url,true).query;
+    //console.log(queryObject);
+    //var query = queryObject.item;
+    var query =  req.param("item");
+    var item = '%' +query+ '%'; // '%' + query.replace(" ","%") + '%';
+
+    models.Post
+        .findAll({where: ["title LIKE ? OR body LIKE ?", item, item], order:"updatedAt DESC"})
+        .success(function(posts) {
+            if (posts) {
+    console.log(posts);
+                res.render('posts/search', {posts: posts , cont:res.cont, query: query});
+            } else {
+                console.log('No se encuentran posts con esa búsqueda');
+                res.redirect('/posts');
+            }
+        })
+        .error(function(error) {
+            console.log(error);
+            res.redirect('/');
+        });
+};
     // Buscar el autor
     models.User
         .find({where: {id: req.post.authorId}})
@@ -121,6 +172,9 @@ exports.show = function(req, res, next) {
 
             // Si encuentro al autor lo añado como el atributo author, sino añado {}.
             req.post.author = user || {};
+
+            // Entrega 3
+            // Obtener el número de comentarios para este post
 
             // Buscar Adjuntos
             req.post.getAttachments({order: 'updatedAt DESC'})
@@ -137,7 +191,61 @@ exports.show = function(req, res, next) {
                           var format = req.params.format || 'html';
                           format = format.toLowerCase();
 
-                          switch (format) { 
+
+                          if ( req.session.user ) {
+
+                            console.log("USUARIO LOGEADO");
+                            models.Favourite// GET /search/item
+
+                              .find({where: {userId: req.session.user.id,
+                                             postId: req.post.id }})
+                              .success(function(isFavourite) {
+
+                                  var favourite = false;
+                                  console.log("FAVOURITE "+isFavourite);
+                                  if (isFavourite) {
+                                    favourite = true;
+                                    console.log("FAVOURITE TRULEADO");
+                                  }
+
+                                  switch (format) { 
+                                    case 'html':
+                                    case 'htm':
+                                        var new_comment = models.Comment.build({
+                                            body: 'Introduzca el texto del comentario'
+                                        });
+                                        res.render('posts/show', {
+                                            post: req.post,
+                                            ncomments: comments.length,
+                                            comments: comments,
+                                            comment: new_comment,
+                                            attachments: attachments, cont: res.cont,
+                                            favourite: favourite
+                                        });
+                                        break;
+                                    case 'json':
+                                        res.send(req.post);
+                                        break;
+                                    case 'xml':
+                                        res.send(post_to_xml(req.post));
+                                        break;
+                                    case 'txt':
+                                        res.send(req.post.title+' ('+req.post.body+')');
+                                        break;
+                                    default:
+                                        console.log('No se soporta el formato \".'+format+'\" pedido para \"'+req.url+'\".');
+                                        res.send(406);
+                                    }
+
+                              })
+                              .error(function(error) {
+                                  next(error);
+                              });
+
+                          } else {
+
+                            console.log("USUARIO NO LOGEADO");
+                            switch (format) { 
                             case 'html':
                             case 'htm':
                                 var new_comment = models.Comment.build({
@@ -145,9 +253,11 @@ exports.show = function(req, res, next) {
                                 });
                                 res.render('posts/show', {
                                     post: req.post,
+                                    ncomments: comments.length,
                                     comments: comments,
                                     comment: new_comment,
-                                    attachments: attachments
+                                    attachments: attachments, cont: res.cont,
+                                    favourite: false
                                 });
                                 break;
                             case 'json':
@@ -162,7 +272,11 @@ exports.show = function(req, res, next) {
                             default:
                                 console.log('No se soporta el formato \".'+format+'\" pedido para \"'+req.url+'\".');
                                 res.send(406);
+                            }
                           }
+
+
+                          
                        })
                        .error(function(error) {
                            next(error);
@@ -215,7 +329,7 @@ exports.new = function(req, res, next) {
           body: 'Introduzca el texto del articulo'
         });
     
-    res.render('posts/new', {post: post});
+    res.render('posts/new', {post: post, cont: res.cont});
 };
 
 // POST /posts
@@ -237,7 +351,7 @@ exports.create = function(req, res, next) {
         };
 
         res.render('posts/new', {post: post,
-                                 validate_errors: validate_errors});
+                                 validate_errors: validate_errors, cont: res.cont});
         return;
     } 
     
@@ -254,7 +368,7 @@ exports.create = function(req, res, next) {
 // GET /posts/33/edit
 exports.edit = function(req, res, next) {
 
-    res.render('posts/edit', {post: req.post});
+    res.render('posts/edit', {post: req.post, cont: res.cont});
 };
 
 // PUT /posts/33
@@ -273,7 +387,7 @@ exports.update = function(req, res, next) {
         };
 
         res.render('posts/edit', {post: req.post,
-                                  validate_errors: validate_errors});
+                                  validate_errors: validate_errors, cont: res.cont});
         return;
     } 
     req.post.save(['title', 'body'])
@@ -335,4 +449,31 @@ exports.destroy = function(req, res, next) {
        .error(function(error) {
            next(error);
        });
+};
+// GET /search/item
+exports.search = function(req, res, next) {
+
+
+    //var url = require('url');
+    //var queryObject = url.parse(req.url,true).query;
+    //console.log(queryObject);
+    //var query = queryObject.item;
+    var query =  req.param("item");
+    var item = '%' +query+ '%'; // '%' + query.replace(" ","%") + '%';
+
+    models.Post
+        .findAll({where: ["title LIKE ? OR body LIKE ?", item, item], order:"updatedAt DESC"})
+        .success(function(posts) {
+            if (posts) {
+    console.log(posts);
+                res.render('posts/search', {posts: posts , cont:res.cont, query: query});
+            } else {
+                console.log('No se encuentran posts con esa búsqueda');
+                res.redirect('/posts');
+            }
+        })
+        .error(function(error) {
+            console.log(error);
+            res.redirect('/');
+        });
 };

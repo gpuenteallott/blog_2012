@@ -9,8 +9,11 @@ var express = require('express')
   , path = require('path')
   , partials = require('express-partials')
   , sessionController = require('./routes/session_controller.js')
+  , count = require('./count')
+  , sessionTimer = require('./sessionTimer')
   , postController = require('./routes/post_controller.js')
   , userController = require('./routes/user_controller.js')
+  , favouriteController = require('./routes/favourite_controller.js')
   , commentController = require('./routes/comment_controller.js')
   , attachmentController = require('./routes/attachment_controller.js');
 
@@ -25,6 +28,7 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon('public/images/favicon.ico'));
+  app.use(count.getCount());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
@@ -44,6 +48,9 @@ app.configure(function(){
 
      next();
   });
+
+
+  app.use(sessionTimer.checkTime());
 
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
@@ -65,12 +72,6 @@ if ('development' == app.get('env')) {
 } else {
    app.use(express.errorHandler());
 }
-
-/*
-process.on('uncaughtException', function (err) {
-  console.log('Caught exception: ' + err);
-});
-*/
 
 
 // Helper estatico:
@@ -95,6 +96,7 @@ app.param('postid', postController.load);
 app.param('userid', userController.load);
 app.param('commentid', commentController.load);
 app.param('attachmentid', attachmentController.load);
+app.param('favouriteid', favouriteController.load);
 
 //---------------------
 
@@ -156,6 +158,10 @@ app.delete('/posts/:postid([0-9]+)/comments/:commentid([0-9]+)',
 	   commentController.loggedUserIsAuthor,
 	   commentController.destroy);
 
+// ------------------------------
+
+app.get('/posts/search', postController.search);
+
 // Comentarios Huerfanos
 app.get('/orphancomments', 
   commentController.orphans);
@@ -208,6 +214,22 @@ app.put('/users/:userid([0-9]+)',
 // app.delete('/users/:userid([0-9]+)', 
 //        sessionController.requiresLogin,
 //           userController.destroy);
+
+//---------------------
+
+app.put('/users/:userid([0-9]+)/favourites/:postid',  
+        sessionController.requiresLogin,
+        userController.loggedUserIsUser,
+        favouriteController.star);
+
+app.delete('/users/:userid([0-9]+)/favourites/:postid',  
+        sessionController.requiresLogin,
+        userController.loggedUserIsUser,
+        favouriteController.unstar);
+app.get('/users/:userid([0-9]+)/favourites',  
+        sessionController.requiresLogin,
+        userController.loggedUserIsUser,
+        favouriteController.index);
 
 //---------------------
 

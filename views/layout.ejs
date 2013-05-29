@@ -29,8 +29,9 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-
-          <a class="brand" href="#">El Blog de CORE</a>
+          
+          <h1><span><a class="brand" href="/">HackathonReviews.herokuapp.com</a></span></h1>
+          
 
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -60,8 +61,20 @@
               <li><a href="/"><i class='icon-home icon-white'></i> Home</a></li>
               <li><a href="/posts"><i class='icon-tasks icon-white'></i> Posts</a></li>
               <li><a href="/users"><i class='icon-user icon-white'></i> Usuarios</a></li>
+              <% if (session.user) { %>
+                <li><a href="/users/<%=session.user.id%>/favourites"><i class='icon-star icon-white'></i> Favoritos</a></li>
+              <% } %>
             </ul>
           </div><!--/.nav-collapse -->
+
+          <% if ( cont )  { %>
+          <p class="count"> Contador de visitas: <%= cont %></p>
+          <% } %>
+
+          <form action="/posts/search" method="GET">
+            <input name="item" value="Buscar por..."/>
+            <input type="submit" value="Enviar"/>
+          </form>
 
         </div>
       </div>
@@ -132,52 +145,7 @@
           </div>
   
         </div><!--/span10-->
-
-        <div class="span2">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Asignatura</li>
-              <li><a target="_blank" href="http://moodle.dit.upm.es">Moodle</a></li>
-
-              <li class="nav-header">Documentación</li>
-              <li><a target="_blank" href="http://twitter.github.com/bootstrap">Bootstrap</a></li>
-              <li><a target="_blank" href="http://cloudinary.com/invites/lpov9zyyucivvxsnalc5/ddykgjrywsdpvvrb7ahc">Cloudinary</a></li>
-              <li><a target="_blank" href="http://expressjs.com">Express</a></li>
-              <li><a target="_blank" href="http://nodejs.org">Nodejs</a></li>
-              <li><a target="_blank" href="http://www.heroku.com">Heroku</a></li>
-              <li><a target="_blank" href="http://sequelizejs.com">Sequelize</a></li>
-
-              <li class="nav-header">Profesores</li>
-              <li><a target="_blank" href="http://www.dit.upm.es/jmdela">José María del Álamo</a></li>
-              <li><a target="_blank" href="http://www.dit.upm.es/costilla">Carmen Costilla</a></li>
-              <li><a target="_blank" href="http://www.dit.upm.es/santiago">Santiago Pavón</a></li>
-              <li><a target="_blank" href="http://www.dit.upm.es/quemada">Juan Quemada</a></li>
-              <li><a target="_blank" href="http://www.dit.upm.es/jsr">Joaquín Salvachúa</a></li>
-              <li><a target="_blank" href="http://www.dit.upm.es/yelmogar">Juan Carlos Yelmo</a></li>
-
-              <li class="nav-header">General</li>
-              <li><a target="_blank" href="http://www.dit.upm.es">DIT</a></li>
-              <li><a target="_blank" href="http://www.etsit.upm.es">ETSIT</a></li>
-              <li><a target="_blank" href="http://www.upm.es">UPM</a></li>
-            </ul>
-          </div><!--/.well -->
-          <img class='hidden-phone' src='/images/apple_core.png'>
-        </div><!--/span -->
-
-      </div><!--/row-->
-
-
-      <div class="row-fluid">
-        <div class="span12">
-          <hr>
-
-          <footer>
-            <p class="text-info"> <small>&copy; Santiago Pavón. Universidad Politécnica de Madrid. Curso 2012-2013.</small></p>
-          </footer>
-        </div>
       </div>
-
-
     </div><!--/.fluid-container-->
 
 </body>
