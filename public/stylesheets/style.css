@@ -95,3 +95,9 @@ video {
   margin: 0 auto;
   display:block;
 }
+
+body {
+  background: url('/images/fondo2.jpg') no-repeat ;
+  background-position:top right;
+	background-color:#eee;
+}
