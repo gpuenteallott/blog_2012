@@ -85,3 +85,13 @@ Comment
   width: 40px;
   cursor:pointer;
 }
+
+h1 span {
+  color:#08C;
+}
+
+video {
+  width: 700px;
+  margin: 0 auto;
+  display:block;
+}
