@@ -18,13 +18,12 @@ var express = require('express')
   , attachmentController = require('./routes/attachment_controller.js');
 
 var util = require('util');
-
 var app = express();
 
 app.use(partials());
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 3005);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon('public/images/favicon.ico'));
@@ -34,7 +33,6 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.cookieParser('--Core Blog 2012--'));
   app.use(express.session());
-
   app.use(require('connect-flash')());
 
   // Helper dinamico:
@@ -49,9 +47,7 @@ app.configure(function(){
      next();
   });
 
-
   app.use(sessionTimer.checkTime());
-
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
 });
@@ -72,7 +68,6 @@ if ('development' == app.get('env')) {
 } else {
    app.use(express.errorHandler());
 }
-
 
 // Helper estatico:
 app.locals.escapeText =  function(text) {
